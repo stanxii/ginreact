@@ -7,7 +7,7 @@ import (
 )
 
 func Database() *gorm.DB {
-	db, err := gorm.Open("mysql", "root:root@tcp(127.0.0.1:3306)/gobackbone?parseTime=true")
+	db, err := gorm.Open("mysql", "root:root@tcp(127.0.0.1:3306)/goreactrest?parseTime=true")
 	if err != nil {
 		fmt.Println("failed to connect database")
 		panic(err)

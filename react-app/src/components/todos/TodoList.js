@@ -9,6 +9,7 @@ class TodoList extends Component {
     }
 
     render() {
+       // console.log(this.props.todos);
         return (
             <div className='ui relaxed divided list' style={{ marginTop: '2rem' }}>
                 {this.props.todos.map(todo => (
@@ -21,12 +22,12 @@ class TodoList extends Component {
                                 Delete
                             </Link>
                             <Link to={`/edit/${todo.id}`} className='header'>
-                                {todo.task}
+                                {todo.name}
                             </Link>
                         </div>
                         <i className='large calendar outline middle aligned icon' />
                         <div className='content'>
-                            <a className='header'>{todo.task}</a>
+                            <a className='header'>{todo.name}</a>
                             <div className='description'>{todo.created_at}</div>
                         </div>
                     </div>

@@ -5,7 +5,7 @@ import TodoCreate from './TodoCreate';
 class Dashboard extends Component {
     render() {
         return (
-            <div className='ui container'>
+            <div className='container'>
                 <TodoCreate />
                 <TodoList />
             </div>

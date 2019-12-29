@@ -3,6 +3,7 @@ package main
 import (
 	"./rest-api"
 	"./settings"
+	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"log"
@@ -11,7 +12,7 @@ import (
 )
 
 func home(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.tmpl", gin.H{
+	c.HTML(http.StatusOK, "index.html", gin.H{
 		"title": "REST API with Gin",
 	})
 }
@@ -25,19 +26,20 @@ func init() {
 
 func main() {
 	db := settings.Database()
-	db.AutoMigrate(&rest_api.Product{})
+	db.AutoMigrate(&rest_api.TodoModel{})
 	router := gin.Default()
 	EnvGinMode := os.Getenv("GIN_MODE")
 	gin.SetMode(EnvGinMode)
+	// Serve the frontend
+	router.Use(static.Serve("/", static.LocalFile("./react-app/dist", true)))
 	router.GET("/", home)
-	router.LoadHTMLGlob("templates/*")
 	v1 := router.Group("/api/v1/")
 	{
-		v1.POST("product/", rest_api.CreateProduct)
-		v1.GET("product/", rest_api.FetchProducts)
-		v1.GET("product/:id", rest_api.FetchProduct)
-		v1.PUT("product/:id", rest_api.UpdateProduct)
-		v1.DELETE("product/:id", rest_api.DeleteProduct)
+		v1.POST("todo/", rest_api.CreateTodoModel)
+		v1.GET("todo/", rest_api.FetchTodoModels)
+		v1.GET("todo/:id", rest_api.FetchTodoModel)
+		v1.PUT("todo/:id", rest_api.UpdateTodoModel)
+		v1.DELETE("todo/:id", rest_api.DeleteTodoModel)
 	}
 	router.Run()
 }

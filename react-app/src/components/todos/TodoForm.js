@@ -4,11 +4,10 @@ import { Field, reduxForm } from 'redux-form';
 class TodoForm extends Component {
     renderField = ({ input, label, meta: { touched, error } }) => {
         return (
-            <div className={`field ${touched && error ? 'error' : ''}`}>
-                <label>{label}</label>
-                <input {...input} autoComplete='off' />
+            <div className={`${touched && error ? 'text-danger' : ''} form-group`}>
+                <input placeholder={`Enter a ${label} name`} {...input} autoComplete='off' className='form-control' />
                 {touched && error && (
-                    <span className='ui pointing red basic label'>{error}</span>
+                    <span>{error}</span>
                 )}
             </div>
         );
@@ -19,15 +18,18 @@ class TodoForm extends Component {
     };
 
     render() {
-        const btnText = `${this.props.initialValues ? 'Update' : 'Add'}`;
+        const btnText = `${this.props.initialValues ? 'Edit' : 'Add'}`;
         return (
-            <div className='ui segment'>
-                <form
-                    onSubmit={this.props.handleSubmit(this.onSubmit)}
-                    className='ui form error'
-                >
-                    <Field name='task' component={this.renderField} label='Task' />
-                    <button className='ui primary button'>{btnText}</button>
+            <div className='col-md-12'>
+                <form onSubmit={this.props.handleSubmit(this.onSubmit)}>
+                    <div className='row'>
+                        <div className='col-md-10'>
+                            <Field name='task' component={this.renderField} label='Task' />
+                        </div>
+                        <div className='col-md-2'>
+                            <button type='submit' className='btn btn-primary btn-block'>{btnText}</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         );
