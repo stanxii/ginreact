@@ -9,7 +9,9 @@ class TodoList extends Component {
     }
 
     render() {
-       // console.log(this.props.todos);
+
+        console.log(this.props.todos)
+        return '';
         return (
             <div className='ui relaxed divided list' style={{ marginTop: '2rem' }}>
                 {this.props.todos.map(todo => (

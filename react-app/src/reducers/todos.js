@@ -10,17 +10,13 @@ export default (state = {}, action) => {
             };
         case GET_TODO:
         case ADD_TODO:
+        case EDIT_TODO:
             return {
                 ...state,
                 [action.payload.id]: action.payload
             };
         case DELETE_TODO:
             return _.omit(state, action.payload);
-        case EDIT_TODO:
-            return {
-                ...state,
-                [action.payload.id]: action.payload
-            };
         default:
             return state;
     }

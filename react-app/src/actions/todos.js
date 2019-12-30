@@ -5,36 +5,32 @@ import history from '../history';
 
 
 export const getTodos = () => async dispatch => {
-    const res = await axios.get('http://localhost:8080/api/v1/todo/', {
-        headers: {
-            'Access-Control-Allow-Origin': '*',
-        },
-    });
+    const response = await axios.get('http://localhost:8000/api/v1/todo/');
     dispatch({
         type: GET_TODOS,
-        payload: res.data
+        payload: response
     });
 };
 
 export const addTodo = formValues => async dispatch => {
-    const res = await axios.post('http://localhost:8080/api/v1/todo/', { ...formValues });
+    const response = await axios.post('http://localhost:8000/api/v1/todo/', { ...formValues });
     dispatch({
         type: ADD_TODO,
-        payload: res.data
+        payload: response
     });
     dispatch(reset('todoForm'));
 };
 
 export const getTodo = id => async dispatch => {
-    const res = await axios.get(`http://localhost:8080/api/v1/todo/${id}/`);
+    const response = await axios.get(`http://localhost:8000/api/v1/todo/${id}/`);
     dispatch({
         type: GET_TODO,
-        payload: res.data
+        payload: response
     });
 };
 
 export const deleteTodo = id => async dispatch => {
-    await axios.delete(`/api/v1/todo/${id}/`);
+    await axios.delete(`http://localhost:8000/api/v1/todo/${id}/`);
     dispatch({
         type: DELETE_TODO,
         payload: id
@@ -43,10 +39,10 @@ export const deleteTodo = id => async dispatch => {
 };
 
 export const editTodo = (id, formValues) => async dispatch => {
-    const res = await axios.patch(`/api/v1/todo/${id}/`, formValues);
+    const response = await axios.patch(`http://localhost:8000/api/v1/todo/${id}/`, formValues);
     dispatch({
         type: EDIT_TODO,
-        payload: res.data
+        payload: response
     });
     history.push('/');
 };

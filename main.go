@@ -32,6 +32,7 @@ func main() {
 	gin.SetMode(EnvGinMode)
 	// Serve the frontend
 	router.Use(static.Serve("/", static.LocalFile("./react-app/dist", true)))
+	router.Use(CORSMiddleware())
 	router.GET("/", home)
 	v1 := router.Group("/api/v1/")
 	{
@@ -41,5 +42,15 @@ func main() {
 		v1.PUT("todo/:id", rest_api.UpdateTodoModel)
 		v1.DELETE("todo/:id", rest_api.DeleteTodoModel)
 	}
-	router.Run()
+	router.Run(":8000")
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Accept", "application/json")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, Access-Control-Allow-Headers, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, DELETE, GET, PUT")
+		c.Next()
+	}
 }
