@@ -1,31 +1,37 @@
 package rest_api
 
 import (
+	"net/http"
+	"strconv"
+
 	"../settings"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"net/http"
 )
 
 type TodoModel struct {
 	gorm.Model
-	Name string `json:"name"`
+	Title     string `json:"title"`
+	Completed int    `json:"completed,omitempty"`
 }
 
 type FormattedTodoModel struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
+	ID        uint   `json:"id"`
+	Title     string `json:"title"`
+	Completed bool   `json:"completed,omitempty"`
 }
 
 func CreateTodoModel(c *gin.Context) {
+	completed, _ := strconv.Atoi(c.PostForm("completed"))
 	model := TodoModel{
-		Name: c.PostForm("name"),
+		Title:     c.PostForm("title"),
+		Completed: completed,
 	}
 	db := settings.Database()
 	db.Save(&model)
 	c.JSON(http.StatusCreated, gin.H{
 		"status":     http.StatusCreated,
-		"message":    "Todo Model created successfully.",
+		"message":    "Todo model was created successfully.",
 		"resourceId": model.ID,
 	})
 }
@@ -38,14 +44,21 @@ func FetchTodoModels(c *gin.Context) {
 	if len(models) <= 0 {
 		c.JSON(http.StatusNotFound, gin.H{
 			"status":  http.StatusNotFound,
-			"message": "Todo Model not found.",
+			"message": "Todo models not found.",
 		})
 		return
 	}
 	for _, item := range models {
+		completed := false
+		if item.Completed == 1 {
+			completed = true
+		} else {
+			completed = false
+		}
 		_models = append(_models, FormattedTodoModel{
-			ID:   item.ID,
-			Name: item.Name,
+			ID:        item.ID,
+			Title:     item.Title,
+			Completed: completed,
 		})
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -62,13 +75,22 @@ func FetchTodoModel(c *gin.Context) {
 	if model.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{
 			"status":  http.StatusNotFound,
-			"message": "Todo Model #" + modelId + " not found.",
+			"message": "Todo model #" + modelId + " not found.",
 		})
 		return
 	}
+
+	completed := false
+	if model.Completed == 1 {
+		completed = true
+	} else {
+		completed = false
+	}
+
 	_model := FormattedTodoModel{
-		ID:   model.ID,
-		Name: model.Name,
+		ID:        model.ID,
+		Title:     model.Title,
+		Completed: completed,
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status": http.StatusOK,
@@ -84,14 +106,18 @@ func UpdateTodoModel(c *gin.Context) {
 	if model.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{
 			"status":  http.StatusNotFound,
-			"message": "Todo Model #" + tTodoModelId + " not found.",
+			"message": "Todo model #" + tTodoModelId + " not found.",
 		})
 		return
 	}
-	db.Model(&model).Update("name", c.PostForm("name"))
+	completed, _ := strconv.Atoi(c.PostForm("completed"))
+	db.Model(&model).Update(
+		"title", c.PostForm("title"),
+		"completed", completed,
+	)
 	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
-		"message": "Todo Model #" + tTodoModelId + " updated successfully.",
+		"message": "Todo model #" + tTodoModelId + " was updated successfully.",
 	})
 }
 
@@ -103,13 +129,13 @@ func DeleteTodoModel(c *gin.Context) {
 	if model.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{
 			"status":  http.StatusNotFound,
-			"message": "Todo Model #" + modelId + " not found.",
+			"message": "Todo model #" + modelId + " not found.",
 		})
 		return
 	}
 	db.Delete(&model)
 	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
-		"message": "Todo Model #" + modelId + " deleted successfully.",
+		"message": "Todo model #" + modelId + " was deleted successfully.",
 	})
 }

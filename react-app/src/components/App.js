@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import '../styles/App.css';
 
-class App extends Component {
+import Footer from './Footer'
+import AddTodo from '../containers/AddTodo'
+import VisibleTodoList from '../containers/VisibleTodoList'
+
+/*class App extends Component {
     render() {
         return (
             <div>
@@ -9,6 +13,15 @@ class App extends Component {
             </div>
         );
     }
-}
+}*/
+
+const App = () => (
+    <div>
+        <AddTodo />
+        <VisibleTodoList />
+        <Footer />
+    </div>
+)
+
 
 export default App;

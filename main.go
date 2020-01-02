@@ -1,15 +1,31 @@
 package main
 
 import (
-	"./rest-api"
-	"./settings"
-	"github.com/gin-gonic/contrib/static"
-	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/jinzhu/gorm"
+
+	"github.com/gin-gonic/contrib/static"
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+
+	rest_api "./rest-api"
+	"./settings"
 )
+
+var db *gorm.DB
+
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	db = settings.Database()
+	db.AutoMigrate(&rest_api.TodoModel{})
+}
 
 func home(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", gin.H{
@@ -17,16 +33,7 @@ func home(c *gin.Context) {
 	})
 }
 
-func init() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-}
-
 func main() {
-	db := settings.Database()
-	db.AutoMigrate(&rest_api.TodoModel{})
 	router := gin.Default()
 	EnvGinMode := os.Getenv("GIN_MODE")
 	gin.SetMode(EnvGinMode)
