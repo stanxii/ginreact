@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 
-	rest_api "./rest-api"
+	"./rest-api"
 	"./settings"
 )
 
